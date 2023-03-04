@@ -3,7 +3,7 @@ import base64
 
 def generateKeys():
     (publicKey, privateKey) = rsa.newkeys(1024)
-    with open('keys/publcKey.pem', 'wb') as p:
+    with open('keys/publicKey.pem', 'wb') as p:
         p.write(publicKey.save_pkcs1('PEM'))
     with open('keys/privateKey.pem', 'wb') as f:
         f.write(privateKey.save_pkcs1('PEM'))
@@ -35,3 +35,4 @@ def decodePDF(encrypted_str, private_key, fileName):
     decoded_str = base64.b64decode(encrypted_str)
     file = open(fileName, 'wb')
     file.write(encoded_str)
+
