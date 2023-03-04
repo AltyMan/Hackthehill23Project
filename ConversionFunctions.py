@@ -32,7 +32,18 @@ def encodePDF(fileName, public_key):
 
 def decodePDF(encrypted_str, private_key, fileName):
     encoded_str = decrypt(encrypted_str, private_key)
-    decoded_str = base64.b64decode(encrypted_str)
+    decoded_str = base64.b64decode(encoded_str)
     file = open(fileName, 'wb')
-    file.write(encoded_str)
+    file.write(decoded_str)
+
+def encodeIMAGE(fileName, public_key):
+    with open(fileName, "rb") as img_file:
+        my_string = base64.b64encode(img_file.read())
+
+    return encrypt(my_string, public_key)
+
+def decodeIMAGE(encrypted_str, private_key, fileName):
+    encodedImage_str = decrypt(encrypted_str, private_key)
+    with open(fileName, 'wb') as im:
+        im.write(base64.decodebytes(encodedImage_str))
 
