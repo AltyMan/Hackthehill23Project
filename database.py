@@ -1,4 +1,5 @@
 import mysql.connector
+from ConversionFunctions import *
 
 email = "aaltman818@gmailcom".replace("@", "_") # for now no periods, may replace later with other character
 
