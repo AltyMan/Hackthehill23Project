@@ -31,7 +31,7 @@ def deconstructSTR(message, public_key):
         encryptedStorage.clear()
 
         for x in range(iterations-1):
-            message_segment = message[(x*117):(((x+1)*117)-1)]
+            message_segment = message[(x*117):((x+1)*117)]
             encryptedStorage.append(encrypt(message_segment, public_key))
         else: 
             return encryptedStorage
@@ -81,8 +81,10 @@ def encodeIMAGE(fileName, public_key):
 
 def decodeIMAGE(encrypted_str, private_key, fileName):
     encodedImage_str = decrypt(encrypted_str, private_key)
+    theString = concatenate(encodedImage_str)
+
     with open(fileName, 'wb') as im:
-        im.write(base64.decodebytes(encodedImage_str))
+        im.write(base64.decode(theString))
 
 def concatenate(list):
     length = len(list)
@@ -102,15 +104,18 @@ privateKey, publicKey = loadKeys()
 
 message = txtToString('test.txt')
 image = 'megamind.png'
+pdf = 'research_results_hackathon_2023.pdf'
 encrypted_message = deconstructSTR(message, publicKey)
 #encrypted_image = encodeIMAGE(image, publicKey)
+#encrypted_pdf = encodePDF(pdf, publicKey)
 
 #print(encrypted_message)
 decryptedList = decrypt(encrypted_message, privateKey)
-decrypted_message = concatenate(decryptedList)
-print(decrypted_message)
+#decrypted_message = concatenate(decryptedList)
+print(*decryptedList, sep='')
 print('')
 
 #print(encrypted_image)
 #print('\n')
-#print(decodeIMAGE(encrypted_image, privateKey))
+#print(decodeIMAGE(encrypted_image, privateKey, 'newImage.png'))
+#print('')

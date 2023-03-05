@@ -1,7 +1,19 @@
 from flask import Flask, session, render_template, Response, request, url_for, flash, redirect
+from flask_mysqldb import MySQL
+
 from ConversionFunctions import *
+from database import *
 
 app = Flask(__name__, template_folder="FrontEnd", static_folder="static")
+
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'rootpassword'
+app.config['MYSQL_DB'] = 'logins'
+ 
+mysql = MySQL(app)
+
+
 
 text = [{'filename': 'Default',
              'content': 'Testing'},]
