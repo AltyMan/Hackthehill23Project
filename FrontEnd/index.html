@@ -1,0 +1,41 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../static/index2.css">
+    <script type="text/javascript" src="../static/index.js" defer></script>
+    <title>TransferShield</title>
+</head>
+<body>
+  <script type="text/javascript" src="../static/index.js"></script>
+  <script type="text/javascript">
+    var text = JSON.parse('{{text | tojson}}');
+    generateContent(text);
+  </script>
+
+<form action="/" method="POST" enctype="multipart/form-data" id="input-form">
+  <input type="file" id="file" name="file" class="file-btn">
+  <input type="submit" value="Upload" id="upload" class="upload-btn">
+</form>
+
+<div id="default-text" onmouseout="hideCheckbox();itemExitHover(this);" onmouseover="moveCheckbox(this);itemHover(this);" onclick="openText(this)" class="desktop-element" draggable="true" ondragstart="drag(event, this)">
+  <img draggable="false" class="text-img" src="https://i.stack.imgur.com/6i4gY.png" />
+  <p onclick="renameFile(this)" class=-"item-text">New Text</p>
+</div>
+<div id="default-img" onmouseout="hideCheckbox();itemExitHover(this);" onmouseover="moveCheckbox(this);itemHover(this);" onclick="openImg(this)" class="desktop-element" draggable="true" ondragstart="drag(event, this)">
+  <img draggable="false" class="img-img" src="https://icon-library.com/images/windows-file-icon/windows-file-icon-16.jpg" />
+  <p onclick="renameFile(this)" class="item-text">New Img</p>
+</div>
+
+<div class="container">
+  <div class="grid" id="grid">
+    <div id="grid-box" ondrop="drop(event, this)" ondragover="allowDrop(event, this)">
+  
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>

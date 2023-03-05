@@ -1,0 +1,1 @@
+#implement a checksum algorithm to check for dataloss
