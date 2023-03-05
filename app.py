@@ -9,11 +9,9 @@ app = Flask(__name__, template_folder="FrontEnd", static_folder="static")
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'rootpassword'
-app.config['MYSQL_DB'] = 'logins'
+app.config['MYSQL_DB'] = 'userLogin'
  
 mysql = MySQL(app)
-
-
 
 text = [{'filename': 'Default',
              'content': 'Testing'},]
@@ -47,7 +45,7 @@ def login():
         return "Sign up via the login Form"
      
     if request.method == 'POST':
-        email = request.form['email']
+        email = request.form['email'].replace("@", "_").replace(".", "_")
         password = request.form['password']
         cursor = mysql.connection.cursor()
         cursor.execute("CREATE TABLE IF NOT EXISTS " + email + " (password TEXT, userID int PRIMARY KEY AUTO_INCREMENT)")
