@@ -26,14 +26,20 @@ def encrypt(message, public_key):
 def deconstructSTR(message, public_key):
     if len(message) > 117:
         length = len(message)
+        #print(length)
         iterations = math.floor(length/117)
+        #print(iterations)
+        #print(length%117)
         encryptedStorage = []
         encryptedStorage.clear()
 
-        for x in range(iterations-1):
+        for x in range(iterations+1):
             message_segment = message[(x*117):((x+1)*117)]
             encryptedStorage.append(encrypt(message_segment, public_key))
-        else: 
+        else:
+            message_segment = message[((iterations+2)*117):
+                                      (((iterations+3)*117)-(length%117))]
+            encryptedStorage.append(encrypt(message_segment, public_key))
             return encryptedStorage
         
     else: 
@@ -48,7 +54,6 @@ def decrypt(ciphertext, private_key):
 
         for x in range(iterations-1):
             decryptedItem = rsa.decrypt(ciphertext[x], private_key).decode()
-            print(decryptedItem)
             decipheredList.append(decryptedItem)
 
         else:
@@ -76,7 +81,6 @@ def decodePDF(encrypted_str, private_key, fileName):
 def encodeIMAGE(fileName, public_key):
     with open(fileName, "rb") as img_file:
         my_string = base64.b64encode(img_file.read())
-
     return deconstructSTR(str(my_string), public_key)
 
 def decodeIMAGE(encrypted_str, private_key, fileName):
@@ -84,7 +88,7 @@ def decodeIMAGE(encrypted_str, private_key, fileName):
     theString = concatenate(encodedImage_str)
 
     with open(fileName, 'wb') as im:
-        im.write(base64.decode(theString))
+        im.write(base64.decodebytes(bytes(theString.encode())))
 
 def concatenate(list):
     length = len(list)
@@ -109,13 +113,8 @@ encrypted_message = deconstructSTR(message, publicKey)
 #encrypted_image = encodeIMAGE(image, publicKey)
 #encrypted_pdf = encodePDF(pdf, publicKey)
 
-#print(encrypted_message)
+print(*encrypted_message, sep='')
 decryptedList = decrypt(encrypted_message, privateKey)
 #decrypted_message = concatenate(decryptedList)
 print(*decryptedList, sep='')
-print('')
-
-#print(encrypted_image)
-#print('\n')
-#print(decodeIMAGE(encrypted_image, privateKey, 'newImage.png'))
 #print('')
