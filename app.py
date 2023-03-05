@@ -46,7 +46,7 @@ def login():
      
     if request.method == 'POST':
         email = request.form['email'].replace("@", "_").replace(".", "_")
-        password = request.form['password']
+        password = deconstructSTR(request.form['password'])
         cursor = mysql.connection.cursor()
         cursor.execute("CREATE TABLE IF NOT EXISTS " + email + " (password TEXT, userID int PRIMARY KEY AUTO_INCREMENT)")
         cursor.execute("INSERT INTO " + email  + "(password) VALUES (" + password + ")")
