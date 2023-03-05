@@ -36,7 +36,7 @@ def insertBLOB(email, biodataFile):
             database="userfiles"
         )
         mycursor = db.cursor()
-        sql_insert_blob_query = "INSERT INTO " + email  + "(fileName, file) VALUES (%s, %s) IF NOT EXIST"
+        sql_insert_blob_query = "INSERT INTO " + email  + "(fileName, file) VALUES (%s, %s)"
 
         file = convertToBinaryData(biodataFile)
 

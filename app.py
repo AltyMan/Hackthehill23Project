@@ -37,6 +37,24 @@ def index():
         # decText = decrypt(encText, privateKey)
         return render_template("index.html", text=text, img=img)
 
+@app.route('/form')
+def form():
+    return render_template('signup.html')
+ 
+@app.route('/signup', methods = ['POST', 'GET'])
+def login():
+    if request.method == 'GET':
+        return "Sign up via the login Form"
+     
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        cursor = mysql.connection.cursor()
+        cursor.execute("CREATE TABLE IF NOT EXISTS " + email + " (password TEXT, userID int PRIMARY KEY AUTO_INCREMENT)")
+        cursor.execute("INSERT INTO " + email  + "(password) VALUES (" + password + ")")
+        mysql.connection.commit()
+        cursor.close()
+        return f"Done!!"
 
 if __name__ == "__main__":
     app.run(debug=True)
