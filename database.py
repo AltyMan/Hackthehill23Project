@@ -1,5 +1,11 @@
 import mysql.connector
 
+db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        passwd="rootpassword",
+        database="userfiles"
+    )
 def userInfo(email):
     email = email.replace("@", "_").replace(".", "_")
     db = mysql.connector.connect(
@@ -90,26 +96,26 @@ def checkCredentialExistance(email):
             passwd="rootpassword",
             database="userLogin"
         )
-        mycursor.execute("CREATE TABLE IF NOT EXISTS Credentials (email TEXT, password TEXT, userID int PRIMARY KEY AUTO_INCREMENT)")
         mycursor = db.cursor()
-        mycursor.execute("SELECT email, COUNT(*) FROM Credentials WHERE email = " + email + " GROUP BY email")
+        mycursor.execute("CREATE TABLE IF NOT EXISTS Credentials(email TEXT, password BLOB, userID int PRIMARY KEY AUTO_INCREMENT)")
+        mycursor.execute("SELECT email, COUNT(*) FROM Credentials WHERE email = %s GROUP BY email", (email,))
         results = mycursor.fetchall()
-        row_count = mycursor.rowcount
-        if row_count == 0:
-            returnBool = False
-        else:
-            returnBool = True
-
-    except mysql.connector.Error as error:
-        print("Failed to upload and save file. {}".format(error))
-        return False
-
-    finally:
+        for row in results:
+            if row[0] == email:
+                returnBool = True
+                print("Exists")
+        if returnBool == False:
+            print("Doesn't Exist")
         if db.is_connected():
             mycursor.close()
-            db.close()
+            db.close()                
             print("MySQL connection is closed")
+    except mysql.connector.Error as error:
+        print("Failed to check. {}".format(error))
+        return False
+
     return returnBool
+        
 
 def createCredentials(email, password):
     email = email.replace("@", "_").replace(".", "_")
@@ -121,7 +127,7 @@ def createCredentials(email, password):
             database="userLogin"
         )
         mycursor = db.cursor()
-        result = mycursor.execute("INSERT INTO Credentials (email, password) VALUES (" + email + ", "  + password + ")")
+        result = mycursor.execute("INSERT INTO Credentials(email, password) VALUES (%s, %s)", (email, password))
         db.commit()
 
     except mysql.connector.Error as error:
@@ -143,14 +149,14 @@ def getCredentials(email):
             database="userLogin"
         )
         mycursor = db.cursor()
-        mycursor.execute("SELECT * from Credentials where email = " + email)
+        mycursor.execute("SELECT * from Credentials")
         record = mycursor.fetchall()
-        for row in record:
-            password = row[1]
-        return password
+        #for row in record:
+            #password = row[1]
+        return record
 
     except mysql.connector.Error as error:
-        print("Failed to save login credentials. {}".format(error))
+        print("Failed to get login credentials. {}".format(error))
 
     finally:
         if db.is_connected():
