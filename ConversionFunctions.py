@@ -31,14 +31,8 @@ def deconstructSTR(message, public_key):
         encryptedStorage.clear()
 
         for x in range(iterations-1):
-            if x == 0:
-                message_segment = message[0:116]
-                encryptedStorage.append(str(encrypt(message_segment, public_key)))
-            else:
-                message_segment = message[(x*117):((x+1)*117)-1]
-            
-            encryptedStorage.append(str(encrypt(message_segment, public_key)))
-
+            message_segment = message[(x*117):(((x+1)*117)-1)]
+            encryptedStorage.append(encrypt(message_segment, public_key))
         else: 
             return encryptedStorage
         
@@ -47,19 +41,15 @@ def deconstructSTR(message, public_key):
 
 def decrypt(ciphertext, private_key):
     if type(ciphertext) == list:
+        print("")
         iterations = len(ciphertext)
         decipheredList = []
         decipheredList.clear()
 
         for x in range(iterations-1):
-            if x == 0:
-                message_segment = str(ciphertext[0:116])
-                #decipheredList.append(message_segment)
-                decipheredList.append(rsa.decrypt(message_segment, private_key).decode())
-            else:
-                message_segment = ciphertext[(x*117):((x+1)*117)-1]
-            
-            decipheredList.append(rsa.decrypt(str(message_segment), private_key).decode())
+            decryptedItem = rsa.decrypt(ciphertext[x], private_key).decode()
+            print(decryptedItem)
+            decipheredList.append(decryptedItem)
 
         else:
             return decipheredList
@@ -94,7 +84,15 @@ def decodeIMAGE(encrypted_str, private_key, fileName):
     with open(fileName, 'wb') as im:
         im.write(base64.decodebytes(encodedImage_str))
 
+def concatenate(list):
+    length = len(list)
+    iterations = math.floor(length/117)
+    decrypted_message = ""
 
+    for x in range(iterations):
+        decrypted_message += list[x]
+    else:
+        return decrypted_message
 
 privateKey, publicKey = loadKeys()
 #print(publicKey)
@@ -108,8 +106,10 @@ encrypted_message = deconstructSTR(message, publicKey)
 #encrypted_image = encodeIMAGE(image, publicKey)
 
 #print(encrypted_message)
-print(decrypt(encrypted_message, privateKey))
-print('\n')
+decryptedList = decrypt(encrypted_message, privateKey)
+decrypted_message = concatenate(decryptedList)
+print(decrypted_message)
+print('')
 
 #print(encrypted_image)
 #print('\n')
