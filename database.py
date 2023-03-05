@@ -11,11 +11,8 @@ db = mysql.connector.connect(
     )
 mycursor = db.cursor()
 
-# On first run
 mycursor.execute("CREATE DATABASE IF NOT EXISTS userFiles")
 
-# On second run
 mycursor.execute("CREATE TABLE IF NOT EXISTS " + email + " (file TEXT, fileID int PRIMARY KEY AUTO_INCREMENT)")
 
-# To view table
 mycursor.execute("DESCRIBE " + email)
