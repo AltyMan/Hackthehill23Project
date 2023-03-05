@@ -1,9 +1,5 @@
 import mysql.connector
 
-db = mysql.connector.connect(
-    host=""
-)
-
 def userInfo(email):
     email = email.replace("@", "_").replace(".", "_")
     db = mysql.connector.connect(
@@ -36,7 +32,7 @@ def insertBLOB(email, biodataFile):
             database="userfiles"
         )
         mycursor = db.cursor()
-        sql_insert_blob_query = "INSERT INTO " + email  + "(fileName, file) VALUES (%s, %s)"
+        sql_insert_blob_query = "INSERT INTO " + email  + " (fileName, file) VALUES (%s, %s)"
 
         file = convertToBinaryData(biodataFile)
 
@@ -57,7 +53,6 @@ def insertBLOB(email, biodataFile):
 def readBLOB(email, fileName, fileLocation):
     email = email.replace("@", "_").replace(".", "_")
     print("Reading BLOB data from user table")
-
     try:
         db = mysql.connector.connect(
             host="localhost",
@@ -85,3 +80,79 @@ def readBLOB(email, fileName, fileLocation):
             db.close()
             print("MySQL connection is closed")
 
+def checkCredentialExistance(email):
+    email = email.replace("@", "_").replace(".", "_")
+    returnBool = False
+    try:
+        db = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            passwd="rootpassword",
+            database="userLogin"
+        )
+        mycursor = db.cursor()
+        mycursor.execute("SELECT email, COUNT(*) FROM Credentials WHERE email = " + email + " GROUP BY email")
+        results = mycursor.fetchall()
+        row_count = mycursor.rowcount
+        if row_count == 0:
+            returnBool = False
+        else:
+            returnBool = True
+
+    except mysql.connector.Error as error:
+        print("Failed to upload and save file. {}".format(error))
+        return False
+
+    finally:
+        if db.is_connected():
+            mycursor.close()
+            db.close()
+            print("MySQL connection is closed")
+    return returnBool
+
+def createCredentials(email, password):
+    email = email.replace("@", "_").replace(".", "_")
+    try:
+        db = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            passwd="rootpassword",
+            database="userLogin"
+        )
+        mycursor = db.cursor()
+        result = mycursor.execute("INSERT INTO Credentials (email, password) VALUES (" + email + ", "  + password + ")")
+        db.commit()
+
+    except mysql.connector.Error as error:
+        print("Failed to save login credentials. {}".format(error))
+
+    finally:
+        if db.is_connected():
+            mycursor.close()
+            db.close()
+            print("MySQL connection is closed")
+
+def getCredentials(email):
+    email = email.replace("@", "_").replace(".", "_")
+    try:
+        db = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            passwd="rootpassword",
+            database="userLogin"
+        )
+        mycursor = db.cursor()
+        mycursor.execute("SELECT * from Credentials where email = " + email)
+        record = mycursor.fetchall()
+        for row in record:
+            password = row[1]
+        return password
+
+    except mysql.connector.Error as error:
+        print("Failed to save login credentials. {}".format(error))
+
+    finally:
+        if db.is_connected():
+            mycursor.close()
+            db.close()
+            print("MySQL connection is closed")
