@@ -3,10 +3,10 @@ import mysql.connector
 def userInfo(email):
     email = email.replace("@", "_").replace(".", "_")
     db = mysql.connector.connect(
-        host="XXX",
-        user="XXX",
-        passwd="XXX",
-        database="XXX"
+        host="localhost",
+        user="root",
+        passwd="rootpassword",
+        database="userfiles"
     )
     mycursor = db.cursor()
     mycursor.execute("CREATE TABLE IF NOT EXISTS " + email + " (fileName TEXT, file LONGBLOB, fileID int PRIMARY KEY AUTO_INCREMENT)")
