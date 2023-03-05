@@ -90,6 +90,7 @@ def checkCredentialExistance(email):
             passwd="rootpassword",
             database="userLogin"
         )
+        mycursor.execute("CREATE TABLE IF NOT EXISTS Credentials (email TEXT, password TEXT, userID int PRIMARY KEY AUTO_INCREMENT)")
         mycursor = db.cursor()
         mycursor.execute("SELECT email, COUNT(*) FROM Credentials WHERE email = " + email + " GROUP BY email")
         results = mycursor.fetchall()

@@ -6,12 +6,7 @@ from database import *
 
 app = Flask(__name__, template_folder="FrontEnd", static_folder="static")
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'rootpassword'
-app.config['MYSQL_DB'] = 'userLogin'
- 
-mysql = MySQL(app)
+privateKey, publicKey = loadKeys()
 
 text = [{'filename': 'Default',
              'content': 'Testing'},]
@@ -30,7 +25,6 @@ def index():
         else:
             text.append({'filename': file.filename,
              'content': "gun"})
-        privateKey, publicKey = loadKeys()
         # encText = encrypt(request.form['text'], publicKey)
         # decText = decrypt(encText, privateKey)
         return render_template("index.html", text=text, img=img)
@@ -40,19 +34,19 @@ def form():
     return render_template('signup.html')
  
 @app.route('/signup', methods = ['POST', 'GET'])
-def login():
+def signup():
     if request.method == 'GET':
         return "Sign up via the login Form"
-     
     if request.method == 'POST':
         email = request.form['email'].replace("@", "_").replace(".", "_")
         password = deconstructSTR(request.form['password'])
-        cursor = mysql.connection.cursor()
-        cursor.execute("CREATE TABLE IF NOT EXISTS " + email + " (password TEXT, userID int PRIMARY KEY AUTO_INCREMENT)")
-        cursor.execute("INSERT INTO " + email  + "(password) VALUES (" + password + ")")
-        mysql.connection.commit()
-        cursor.close()
-        return f"Done!!"
+        
+        ifExists = checkCredentialExistance(email)
+        if (ifExists):
+            return f"Can't sign up, account already exists"
+        else :
+            createCredentials(email, password)
+            return f"Done!!"
 
 if __name__ == "__main__":
     app.run(debug=True)
